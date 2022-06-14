@@ -319,8 +319,8 @@ public class FileMenuFilter {
     }
 
     private void filterUnsetEncrypted(List<Integer> toShow, List<Integer> toHide, boolean endToEndEncryptionEnabled) {
-        if (files.isEmpty() || !isSingleSelection() || isSingleFile() || !isEncryptedFolder()
-                || !endToEndEncryptionEnabled) {
+        if (files.isEmpty() || !isSingleSelection() || isSingleFile() || !isEncryptedFolder() || hasEncryptedParent()
+            || !endToEndEncryptionEnabled) {
             toHide.add(R.id.action_unset_encrypted);
         } else {
             toShow.add(R.id.action_unset_encrypted);
@@ -544,6 +544,13 @@ public class FileMenuFilter {
         } else {
             return false;
         }
+    }
+
+    private boolean hasEncryptedParent() {
+        OCFile folder = files.iterator().next();
+        OCFile parent = componentsGetter.getStorageManager().getFileById(folder.getParentId());
+
+        return parent != null && parent.isEncrypted();
     }
 
     private boolean isSingleImage() {
